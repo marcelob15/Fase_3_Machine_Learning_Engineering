@@ -1,4 +1,4 @@
-# Tech Challenge - Fase 3: Machine Learning Engineering ✈️
+# Fase 3: Machine Learning Engineering ✈️
 
 Este projeto faz parte da Pós-Tech em Machine Learning Engineering. O objetivo é analisar dados históricos de voos dos EUA para prever atrasos e identificar padrões geográficos de congestionamento, utilizando técnicas de aprendizado supervisionado e não supervisionado.
 
