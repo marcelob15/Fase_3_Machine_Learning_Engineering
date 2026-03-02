@@ -1,4 +1,4 @@
-# Tech Challenge - Fase 3: Machine Learning Engineering ✈️
+# Fase 3: Machine Learning Engineering
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -29,8 +29,8 @@ O projeto foi modularizado em um pipeline de 7 etapas para garantir eficiência,
 | 01 | `01_eda.py` | Análise Exploratória de Dados inicial e identificação de pontos críticos |
 | 02 | `02_graficos.py` | Geração de visualizações para entendimento de padrões e sazonalidade |
 | 03 | `03_ETL.py` | Extração, Transformação e Carga inicial dos dados |
-| 04 | `04_Pre_Random_Forest.py` | Testes preliminares e validação de algoritmos |
-| 05 | `05_Limpeza_Pesada.py` | Pipeline de engenharia de dados (CSV → Parquet) com tipagem otimizada |
+| 04 | `04_Validacao.py` | Testes preliminares e validação de algoritmos |
+| 05 | `05_Limpeza.py` | Pipeline de engenharia de dados (CSV → Parquet) com tipagem otimizada |
 | 06 | `06_Supervisionado_classificacao_atraso.py` | Treinamento do modelo de classificação (Random Forest) |
 | 07 | `07_Nao_Supervisionado_clusterizacao_geografica.py` | Agrupamento de aeroportos via K-Means |
 
@@ -68,10 +68,17 @@ source .venv/bin/activate
 
 ### 4. Instalar Dependências
 ```bash
-python -m pip install --upgrade pip
-pip install pandas numpy matplotlib seaborn pyarrow scikit-learn
-pip freeze > requirements.txt
+pip install -r requirements.txt
 ```
+
+É necessário fazer download do arquivo flights.csv para a pasta `dataset`. Pois ser tamanho é 564 MB.
+Link
+https://drive.google.com/file/d/1ceyRYUzkF22E_PvwKBF0s2oyhWZpRGGN/view?usp=drive_link
+
+Os demias arquivos já estão pasta `dataset`
+airlines.csv
+airports.csv
+dicionario_dados_flights.pdf
 
 ---
 
@@ -79,12 +86,16 @@ pip freeze > requirements.txt
 
 Siga a ordem sequencial dos scripts para garantir que os arquivos processados e imagens sejam gerados corretamente:
 
+Para melhorar a melhorar o processamento, o arquivo flights.csv foi transformado para o formato Parquet.
+Com isto ganhamos velocidade no processamento. O arquivo 03_ETL.py faz esta trasnformação.
+
+
 ```bash
 python 01_eda.py
 python 02_graficos.py
 python 03_ETL.py
-python 04_Pre_Random_Forest.py
-python 05_Limpeza_Pesada.py
+python 04_Validacao.py
+python 05_Limpeza.py
 python 06_Supervisionado_classificacao_atraso.py
 python 07_Nao_Supervisionado_clusterizacao_geografica.py
 ```
@@ -113,7 +124,7 @@ Insight: Identificamos "zonas de risco" concentradas no Nordeste e em grandes hu
 
 ```
 .
-├── dataset/                # Contém os arquivos CSV originais (ignorados pelo Git)
+├── dataset/                # Contém os arquivos CSV originais (flights.csv via download no link)
 ├── parquet/                # Armazena o dataset processado e otimizado para ML
 ├── img_eda/                # Visualizações da análise exploratória
 ├── img_supervisionado/     # Matriz de confusão e gráficos de importância de variáveis
