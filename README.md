@@ -46,11 +46,14 @@ python 06_Supervisionado_classificacao_atraso.py
 python 07_Nao_Supervisionado_clusterizacao_geografica.py
 
 
+<<<<<<< HEAD
+=======
 O Gemini disse
 Para fechar o seu projeto com chave de ouro, o README.md precisa ser claro, profissional e destacar o rigor técnico que você aplicou. Abaixo está uma estrutura completa que documenta desde a instalação até as conclusões do modelo.
 
 Crie um arquivo chamado README.md na raiz do seu projeto e cole o conteúdo abaixo:
 
+>>>>>>> 21404f82eb61b3820c94e6557f487f2d0625b8b1
 Markdown
 # Tech Challenge - Fase 3: Machine Learning Engineering ✈️
 
@@ -137,3 +140,4 @@ __pycache__/
 *.csv
 *.parquet
 .DS_Store
+

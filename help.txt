@@ -1,0 +1,29 @@
+# Fase_3_Machine_Learning_Engineering
+Fase 3 - Machine Learning Engineering
+
+python -m venv venv
+
+Windows (CMD):
+venv\Scripts\activate
+
+Windows (PowerShell):
+venv\Scripts\Activate.ps1
+
+Linux / macOS:
+source venv/bin/activate
+
+python -m pip install pandas numpy matplotlib seaborn
+python -m pip install pyarrow
+python -m pip install scikit-learn pandas numpy
+pip freeze > requirements.txt
+
+python 01_eda.py
+python 02_graficos.py
+python 03_ETL.py
+python 04_Pre_Random_Forest.py
+python 05_Limpeza_Pesada.py
+python 06_Supervisionado_classificacao_atraso.py
+python 07_Nao_Supervisionado_clusterizacao_geografica.py
+
+
+python 06_Random_Forest.py
