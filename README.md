@@ -1,45 +1,85 @@
-Tech Challenge - Fase 3: Machine Learning Engineering ✈️
-Este projeto faz parte da Pós-Tech em Machine Learning Engineering. O objetivo é analisar dados históricos de voos dos EUA para prever atrasos e identificar padrões geográficos de congestionamento, utilizando técnicas de aprendizado supervisionado e não supervisionado.
+# Tech Challenge - Fase 3: Machine Learning Engineering ✈️
 
-📋 Estrutura do Projeto
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+Este projeto faz parte da Pós-Tech em **Machine Learning Engineering**. O objetivo é analisar dados históricos de voos dos EUA para prever atrasos e identificar padrões geográficos de congestionamento, utilizando técnicas de aprendizado supervisionado e não supervisionado.
+
+---
+
+## 📋 Sobre o Projeto
+
+O transporte aéreo é uma parte vital da infraestrutura global, mas os atrasos de voos impactam milhões de passageiros todos os anos. Neste projeto, utilizamos o conjunto de dados público **Flight Delays and Cancellations** para desenvolver análises e modelos preditivos.
+
+### 🎯 Objetivos Principais
+
+- **EDA:** Exploração estatística e visualização de dados  
+- **Aprendizado Supervisionado:** Prever se um voo vai atrasar (Classificação)  
+- **Aprendizado Não Supervisionado:** Agrupar aeroportos com perfis semelhantes (Clusterização)  
+- **Engenharia de Dados:** Pipeline ETL otimizado (CSV → Parquet)  
+
+---
+
+## 🏗️ Estrutura do Pipeline
+
 O projeto foi modularizado em um pipeline de 7 etapas para garantir eficiência, organização e escalabilidade:
 
-01_eda.py: Análise Exploratória de Dados inicial e identificação de pontos críticos.
+| Ordem | Script | Descrição |
+|------:|--------|-----------|
+| 01 | `01_eda.py` | Análise Exploratória de Dados inicial e identificação de pontos críticos |
+| 02 | `02_graficos.py` | Geração de visualizações para entendimento de padrões e sazonalidade |
+| 03 | `03_ETL.py` | Extração, Transformação e Carga inicial dos dados |
+| 04 | `04_Pre_Random_Forest.py` | Testes preliminares e validação de algoritmos |
+| 05 | `05_Limpeza_Pesada.py` | Pipeline de engenharia de dados (CSV → Parquet) com tipagem otimizada |
+| 06 | `06_Supervisionado_classificacao_atraso.py` | Treinamento do modelo de classificação (Random Forest) |
+| 07 | `07_Nao_Supervisionado_clusterizacao_geografica.py` | Agrupamento de aeroportos via K-Means |
 
-02_graficos.py: Geração de visualizações para entendimento de padrões e sazonalidade.
+---
 
-03_ETL.py: Extração, Transformação e Carga inicial dos dados.
+## 🛠️ Instalação e Configuração
 
-04_Pre_Random_Forest.py: Testes preliminares e validação de algoritmos.
+### 1. Clonar o Repositório
+```bash
+git clone <url-do-repositorio>
+cd <nome-da-pasta>
+```
 
-05_Limpeza_Pesada.py: Pipeline de engenharia de dados (CSV para Parquet) com tipagem otimizada.
+### 2. Criar Ambiente Virtual
+```bash
+python -m venv .venv
+```
 
-06_Supervisionado_classificacao_atraso.py: Treinamento do modelo de classificação (Random Forest).
+### 3. Ativar Ambiente Virtual
 
-07_Nao_Supervisionado_clusterizacao_geografica.py: Agrupamento de aeroportos via K-Means.
+Windows (CMD):
+```bash
+.venv\Scripts\activate
+```
 
-🛠️ Instalação e Configuração
-1. Criar Ambiente Virtual
-Bash
+Windows (PowerShell):
+```bash
+.venv\Scripts\Activate.ps1
+```
 
-python -m venv venv
-2. Ativar Ambiente Virtual
-Windows (CMD): venv\Scripts\activate
+Linux / macOS:
+```bash
+source .venv/bin/activate
+```
 
-Windows (PowerShell): venv\Scripts\Activate.ps1
-
-Linux / macOS: source venv/bin/activate
-
-3. Instalar Dependências
-Bash
-
-python -m pip install pandas numpy matplotlib seaborn pyarrow scikit-learn
+### 4. Instalar Dependências
+```bash
+python -m pip install --upgrade pip
+pip install pandas numpy matplotlib seaborn pyarrow scikit-learn
 pip freeze > requirements.txt
-🚀 Como Executar
+```
+
+---
+
+## 🚀 Como Executar
+
 Siga a ordem sequencial dos scripts para garantir que os arquivos processados e imagens sejam gerados corretamente:
 
-Bash
-
+```bash
 python 01_eda.py
 python 02_graficos.py
 python 03_ETL.py
@@ -47,30 +87,63 @@ python 04_Pre_Random_Forest.py
 python 05_Limpeza_Pesada.py
 python 06_Supervisionado_classificacao_atraso.py
 python 07_Nao_Supervisionado_clusterizacao_geografica.py
-📊 Resultados e Conclusões
-Aprendizado Supervisionado (Classificação)
+```
+
+---
+
+## 📊 Resultados e Conclusões
+
+### 🤖 Aprendizado Supervisionado (Classificação)
+
 Utilizamos o algoritmo Random Forest Classifier com balanceamento de classes para prever atrasos superiores a 15 minutos (padrão FAA).
 
-ROC-AUC Score: 0.6719
+- ROC-AUC Score: 0.6719  
+- Recall (Atrasos): 0.65 (O modelo identifica 65% dos atrasos reais)  
+- Feature Importance: A variável HORA (engenharia de feature baseada no horário de partida) foi o preditor mais forte (~48%), confirmando o efeito cascata de atrasos ao longo do dia  
 
-Recall (Atrasos): 0.65 (O modelo identifica 65% dos atrasos reais).
+### 🧩 Aprendizado Não Supervisionado (Clusterização)
 
-Feature Importance: A variável HORA (HOUR) foi o preditor mais forte (~48%), confirmando o efeito cascata de atrasos ao longo do dia.
-
-Aprendizado Não Supervisionado (Clusterização)
 O algoritmo K-Means agrupou os aeroportos em 4 clusters distintos baseados em localização geográfica e taxa de atraso média.
 
-Identificamos "zonas de risco" concentradas no Nordeste e em grandes hubs centrais como Chicago (ORD).
+Insight: Identificamos "zonas de risco" concentradas no Nordeste e em grandes hubs centrais como Chicago (ORD).
 
-📂 Organização de Arquivos
-/dataset: Contém os arquivos CSV originais (ignorado pelo Git).
+---
 
-/parquet: Armazena o dataset processado e otimizado para ML.
+## 📂 Organização de Arquivos
 
-/img_eda: Visualizações da análise exploratória.
+```
+.
+├── dataset/                # Contém os arquivos CSV originais (ignorados pelo Git)
+├── parquet/                # Armazena o dataset processado e otimizado para ML
+├── img_eda/                # Visualizações da análise exploratória
+├── img_supervisionado/     # Matriz de confusão e gráficos de importância de variáveis
+├── img_nao_supervisionado/ # Mapas de clusterização geográfica
+├── 01_eda.py
+├── 02_graficos.py
+├── 03_ETL.py
+├── 04_Pre_Random_Forest.py
+├── 05_Limpeza_Pesada.py
+├── 06_Supervisionado_classificacao_atraso.py
+├── 07_Nao_Supervisionado_clusterizacao_geografica.py
+├── requirements.txt
+└── README.md
+```
 
-/img_supervisionado: Matriz de confusão e gráficos de importância de variáveis.
+---
 
-/img_nao_supervisionado: Mapas de clusterização geográfica.
+## 📖 Dicionário de Dados
 
-Desenvolvido como parte do currículo de Machine Learning Engineering.
+Principais colunas utilizadas baseadas no arquivo `dicionario_dados_flights.pdf`:
+
+| Coluna | Descrição | Tipo |
+|--------|-----------|------|
+| YEAR, MONTH, DAY | Data do voo | Inteiro |
+| DAY_OF_WEEK | Dia da semana (1=Seg, 7=Dom) | Inteiro |
+| AIRLINE | Código da companhia aérea (ex: AA, DL) | Categórica |
+| ORIGIN_AIRPORT | Código IATA do aeroporto de origem | Categórica |
+| DESTINATION_AIRPORT | Código IATA do aeroporto de destino | Categórica |
+| DEPARTURE_DELAY | Atraso na partida (em minutos) | Numérico |
+| ARRIVAL_DELAY | Atraso na chegada (em minutos) | Numérico |
+| CANCELLED | Indica se o voo foi cancelado (1= sim, 0= não) | Binária |
+| DISTANCE | Distância entre origem e destino (em milhas) | Numérico |
+| AIR_TIME | Tempo no ar (em minutos) | Numérico |
