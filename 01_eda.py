@@ -1,8 +1,12 @@
 import pandas as pd
 import numpy as np
 import os
+import time  # Importado para medir o tempo
 
 def analisar_pontos_criticos(file_path):
+    # Início da medição
+    start_time = time.time()
+    
     # Tipos de dados otimizados para economizar memória (Reduz o consumo em ~60%)
     dtypes = {
         'YEAR': 'int16', 'MONTH': 'int8', 'DAY': 'int8', 'DAY_OF_WEEK': 'int8',
@@ -11,7 +15,7 @@ def analisar_pontos_criticos(file_path):
         'DIVERTED': 'int8', 'CANCELLED': 'int8'
     }
 
-    print(f"Lendo {file_path}...")
+    print(f"🚀 Lendo {file_path}...")
     df = pd.read_csv(file_path, dtype=dtypes, low_memory=False)
     
     # --- ANÁLISE DE PONTOS CRÍTICOS ---
@@ -25,7 +29,6 @@ def analisar_pontos_criticos(file_path):
     taxa_atraso_extremo = (atrasos_extremos / len(df)) * 100
     
     # 3. Aeroportos Gargalos (Origem com maior média de atraso)
-    # Filtramos aeroportos com volume > 1% da base para evitar distorções
     min_volume = len(df) * 0.01
     stats_aeroporto = df.groupby('ORIGIN_AIRPORT')['DEPARTURE_DELAY'].agg(['mean', 'count'])
     gargalos = stats_aeroporto[stats_aeroporto['count'] >= min_volume].sort_values(by='mean', ascending=False).head(10)
@@ -33,16 +36,29 @@ def analisar_pontos_criticos(file_path):
     # 4. Concentração de Cancelamentos
     taxa_cancelamento = df['CANCELLED'].mean() * 100
     
-    print("\n=== RELATÓRIO DE PONTOS CRÍTICOS ===")
+    # Fim da medição
+    end_time = time.time()
+    tempo_total = end_time - start_time
+
+    print("\n" + "="*40)
+    print("=== RELATÓRIO DE PONTOS CRÍTICOS ===")
+    print("="*40)
     print(f"Total de registros: {len(df):,}")
     print(f"Taxa Global de Cancelamento: {taxa_cancelamento:.2f}%")
     print(f"Voos com Atraso Crítico (>3h): {atrasos_extremos:,} ({taxa_atraso_extremo:.2f}%)")
+    print(f"\n⏱️ Tempo de processamento: {tempo_total:.2f} segundos")
+    print("-" * 40)
     print("\n--- Top 10 Aeroportos Gargalo (Volume Significativo) ---")
     print(gargalos)
     
     return df, gargalos
 
-# Se for rodar no arquivo grande:
+# Execução
 base_dir = os.path.dirname(os.path.abspath(__file__))
 flights_path = os.path.join(base_dir, 'dataset', 'flights.csv')
-df_final, gargalos = analisar_pontos_criticos(flights_path)
+
+# Verifica se o arquivo existe antes de tentar ler
+if os.path.exists(flights_path):
+    df_final, gargalos = analisar_pontos_criticos(flights_path)
+else:
+    print(f"❌ Erro: O arquivo não foi encontrado em {flights_path}")

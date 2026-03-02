@@ -4,6 +4,9 @@ import seaborn as sns
 import os
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
+import time
+
+start_time = time.time()
 
 # Configurações de Diretório
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,3 +47,4 @@ plt.grid(True, linestyle='--', alpha=0.5)
 plt.savefig(f'{output_dir}/mapa_clusters_geograficos.png')
 
 print(f"✨ Modelagem Não Supervisionada concluída! Imagens em: {output_dir}")
+print(f"\n⏱️ Tempo de execução da Modelagem: {time.time() - start_time:.2f} segundos")

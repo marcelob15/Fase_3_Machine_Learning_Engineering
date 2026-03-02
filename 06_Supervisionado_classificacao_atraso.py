@@ -6,6 +6,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+import time
+
+start_time = time.time()
 
 # Configurações de Diretório
 base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -54,3 +57,4 @@ plt.title('Importância das Variáveis na Predição', fontsize=14, fontweight='
 plt.savefig(f'{output_dir}/feature_importance.png', bbox_inches='tight')
 
 print(f"✨ Modelagem Supervisionada concluída! Imagens em: {output_dir}")
+print(f"\n⏱️ Tempo de execução da Modelagem: {time.time() - start_time:.2f} segundos")
