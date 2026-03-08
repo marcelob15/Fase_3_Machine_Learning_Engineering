@@ -241,7 +241,7 @@ Dados disponíveis no momento do planejamento/compra do bilhete:
 
 ### C. Variáveis Criadas (Engenharia de Atributos)
 
-Durante a etapa de **Feature Engineering**, novas variáveis foram derivadas a partir dos dados originais para capturar padrões temporais e geográficos relevantes.
+Durante a etapa de **Engenharia de Atributos**, novas variáveis foram derivadas a partir dos dados originais para capturar padrões temporais e geográficos relevantes.
 
 #### 1. `SCHEDULED_HOUR` — Preditor Temporal
 
