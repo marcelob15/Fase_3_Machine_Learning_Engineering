@@ -245,7 +245,7 @@ O objetivo principal foi prever se um voo sofrerá um atraso superior a 15 minut
 | **Recall (Sensibilidade)** | **0.65** | **Resultado Crítico:** O modelo identifica **65% dos atrasos reais**. Antes do balanceamento, este valor era <2%. Em um cenário real, priorizamos alertar o passageiro sobre um risco (mesmo que seja um falso alarme) do que deixá-lo perder uma conexão. |
 | **Precision** | **~0.27** | O trade-off aceito: para garantir o alto Recall, o modelo gera mais alertas preventivos. |
 
-#### 🔎 Interpretabilidade (Explainable AI)
+#### 🔎 Interpretabilidade
 
 A análise de importância das variáveis (`feature_importances_`) revelou a dinâmica operacional dos atrasos:
 
