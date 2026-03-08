@@ -241,18 +241,55 @@ Dados disponíveis no momento do planejamento/compra do bilhete:
 
 ### C. Variáveis Criadas (Engenharia de Atributos)
 
-### 1. `SCHEDULED_HOUR` (O Preditor Temporal)
-**Origem:** Extraída da coluna `SCHEDULED_DEPARTURE` (formato HHMM).
-* **Motivo:** Reduzir o ruído de minutos individuais e agrupar voos em janelas horárias. 
-* **Impacto:** Foi identificada como a **variável mais importante do modelo (Importance ≈ 48%)**, capturando o "Efeito Bola de Neve", onde atrasos matinais se acumulam linearmente até o pico das 20h.
+Durante a etapa de **Feature Engineering**, novas variáveis foram derivadas a partir dos dados originais para capturar padrões temporais e geográficos relevantes.
 
-### 2. `TARGET` / `IS_DELAYED` (Variável Resposta)
-**Origem:** Derivada de `ARRIVAL_DELAY`.
-* **Lógica:** Seguindo o padrão da **FAA**, voos com atraso > 15 min são classificados como `1`, os demais como `0`. Isso transforma o problema em uma classificação binária robusta.
+#### 1. `SCHEDULED_HOUR` — Preditor Temporal
 
-### 3. Enriquecimento Geográfico (`LATITUDE` / `LONGITUDE`)
-**Origem:** *Merge* estratégico com `airports.csv`.
-* **Utilidade:** Fundamental para a etapa de **Aprendizado Não Supervisionado**, permitindo ao K-Means agrupar aeroportos por perfis de risco regional.
+**Origem:**  
+Extraída da coluna `SCHEDULED_DEPARTURE` (formato HHMM).
+
+**Objetivo:**  
+Reduzir o ruído de minutos individuais e agrupar voos em **janelas horárias operacionais**.
+
+**Impacto no Modelo:**  
+Identificada como a **variável mais importante do modelo (Importance ≈ 48%)**, capturando o **"Efeito Bola de Neve"**, no qual atrasos acumulados ao longo do dia aumentam progressivamente a probabilidade de atraso nos voos noturnos.
+
+---
+
+#### 2. `TARGET` / `IS_DELAYED` — Variável Resposta
+
+**Origem:**  
+Derivada da coluna `ARRIVAL_DELAY`.
+
+**Lógica de Classificação:**
+
+| Condição | Classe |
+|---|---|
+| `ARRIVAL_DELAY > 15 min` | `1` (Atrasado) |
+| `ARRIVAL_DELAY ≤ 15 min` | `0` (Pontual) |
+
+O limite de **15 minutos** segue o padrão da **FAA (Federal Aviation Administration)**.
+
+**Impacto:**  
+Transforma o problema em uma **classificação binária**, permitindo o uso de algoritmos supervisionados como **Random Forest**.
+
+---
+
+#### 3. Enriquecimento Geográfico (`LATITUDE`, `LONGITUDE`)
+
+**Origem:**  
+Realizado um **merge** com `airports.csv` utilizando o código IATA do aeroporto.
+
+**Objetivo:**  
+Adicionar **informação espacial** ao dataset.
+
+**Impacto na Análise:**
+
+Permite aplicar técnicas de **clusterização geográfica**, utilizadas posteriormente no **K-Means** para identificar:
+
+- Hubs congestionados  
+- Regiões com maior risco de atraso  
+- Padrões operacionais regionais
 
 
 ---
