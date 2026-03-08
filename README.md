@@ -254,7 +254,16 @@ A análise de importância das variáveis (`feature_importances_`) revelou a din
 
 > **Artefatos:**
 > - `img_supervisionado/feature_importance.png`: Ranking de variáveis.
+
+<p align="center">
+  <img src="img_supervisionado/feature_importance.png" width="700">
+</p>
+
 > - `img_supervisionado/matriz_confusao.png`: Visualização dos Acertos vs. Erros (Trade-off Precisão/Recall).
+
+<p align="center">
+  <img src="img_supervisionado/matriz_confusao.png" width="700">
+</p>
 
 ---
 
@@ -277,6 +286,10 @@ O algoritmo segmentou a malha aérea americana em 4 zonas distintas:
 
 > **Visualização:**
 > O mapa gerado (`img_nao_supervisionado/mapa_clusters_geograficos.png`) permite à gestão identificar visualmente as zonas de gargalo logístico, sugerindo onde alocar mais tempo de solo (buffer) entre voos.
+
+<p align="center">
+  <img src="img_nao_supervisionado/mapa_clusters_geograficos.png" width="700">
+</p>
 
 ---
 
