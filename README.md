@@ -317,7 +317,7 @@ A clusterização revelou padrões onde o volume de voos não é o único vilão
 
 4.  **Zonas de Estabilidade Operacional:** Aeroportos localizados principalmente no Sul e Oeste dos EUA, com climas mais estáveis e menor congestionamento de espaço aéreo, apresentando as menores variâncias nos horários de chegada.
 
-> **Visualização Estratégica:** O mapa de clusters (`img_nao_supervisionado/mapa_clusters_ml.png`) permite que gestores identifiquem onde o "Risco Base" é geograficamente inevitável, auxiliando no planejamento de rotas alternativas ou folgas de cronograma (buffers).
+> **Visualização Estratégica:** O mapa de clusters (`img_nao_supervisionado/mapa_clusters_ml.png`) permite que gestores identifiquem onde o "Risco Base" é geograficamente inevitável, auxiliando no planejamento de rotas alternativas ou folgas de cronograma.
 
 <p align="center">
   <img src="img_nao_supervisionado/mapa_clusters_geograficos.png" width="700" alt="Mapa de Clusters Geográficos">
