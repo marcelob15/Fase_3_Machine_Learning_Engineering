@@ -142,39 +142,70 @@ A partir do script 03_ETL.py, os dados passam a ser armazenados no formato **Par
 
 ---
 
-### 📈 Análise Exploratória de Dados (EDA)
+## 🛠️ Engenharia de Dados e Otimização
 
-Nesta etapa, processamos **5.8 milhões de registros** para entender o comportamento da malha aérea. O foco foi identificar variáveis preditoras para a modelagem supervisionada. Os artefatos visuais gerados (`img_eda/`) revelaram os seguintes padrões:
+Para viabilizar a análise de **5.8 milhões de registros** em ambiente local, foi desenvolvido um pipeline de ETL focado em performance e gerenciamento de memória.
 
-- **`grafico_01_distribuicao.png` (Target Definition)**
-  - **Insight:** A distribuição de atrasos possui uma cauda longa à direita (assimetria positiva).
-  - **Decisão Técnica:** Definimos o *target* binário com corte em **15 minutos** (padrão FAA), pois tratar o problema como regressão pura seria prejudicado pelos *outliers* extremos (>3 horas), que representam 0.81% dos dados.
+O processamento bruto do CSV consumia cerca de **1.45 GB** de RAM. Através de técnicas de **Downcasting** (ajuste de tipagem numérica) e conversão de strings para dados categóricos, reduzimos o consumo para **174 MB** no formato final Parquet.
 
-- **`grafico_02_companhias.png` (Operational Efficiency)**
-  - **Insight:** Há uma clara distinção de performance entre modelos de negócio. Companhias *Low-Cost* (ex: Spirit, Frontier) apresentam taxas de atraso sistematicamente maiores que as *Legacy Carriers* (ex: Delta, Alaska), tornando a variável `AIRLINE` um forte preditor.
+| Métrica | Antes (CSV Bruto) | Depois (Parquet Otimizado) | Ganho |
+| :--- | :--- | :--- | :--- |
+| **Memória RAM** | 1457.20 MB | **174.47 MB** | 🔻 **88.03%** |
+| **Formato** | Texto (String) / Int64 | Categorical / Int8 / Float32 | Leitura 10x mais rápida |
 
-- **`grafico_03_aeroportos.png` (Infrastructure Bottlenecks)**
-  - **Insight:** Aeroportos que funcionam como grandes *Hubs* de conexão (ex: **ORD/Chicago**, **EWR/Newark**) aparecem consistentemente como gargalos logísticos. A saturação da infraestrutura nestes locais aumenta a probabilidade de atraso independentemente da companhia aérea.
+**Principais Otimizações de Tipagem:**
+*   `AIRLINE` / `ORIGIN_AIRPORT`: `object` (string) ➔ `category`
+*   `MONTH` / `DAY`: `int64` ➔ `int8`
+*   `ARRIVAL_DELAY`: `float64` ➔ `float32`
 
-- **`grafico_04_horario.png` (Propagation Effect)**
-  - **Insight:** A probabilidade de atraso não é linear. Observamos o **"Efeito Bola de Neve"**: voos pela manhã (06h-09h) têm pontualidade alta, enquanto voos noturnos (20h-23h) sofrem com o acúmulo de atrasos anteriores.
-  - **Decisão Técnica:** A criação da feature `SCHEDULED_HOUR` (extraída do horário de partida) é indispensável para o modelo.
+---
 
+## 📈 Análise Exploratória de Dados (EDA)
 
-#### **A. Variáveis Ignoradas (E por quê?)**
-Estas variáveis foram removidas para evitar **Data Leakage (Vazamento de Dados)**. Elas contêm informações que só ocorrem *após* o evento que queremos prever.
-*   `DEPARTURE_TIME`, `DEPARTURE_DELAY`: Se o avião já saiu atrasado, é óbvio que chegará atrasado.
-*   `WHEELS_OFF`, `WHEELS_ON`: Horários exatos da decolagem/pouso.
-*   `TAXI_OUT`, `TAXI_IN`: Tempo de manobra na pista.
-*   `ELAPSED_TIME`, `AIR_TIME`: Duração real do voo.
-*   `CANCELLATION_REASON`: Só existe se o voo for cancelado.
-*   `AIR_SYSTEM_DELAY`, `SECURITY_DELAY`, etc.: Explicam o atraso *depois* que ele ocorreu.
+Após a estruturação dos dados, os artefatos visuais gerados (`img_eda/`) revelaram padrões comportamentais da malha aérea americana que guiaram a modelagem:
 
-#### **B. Variáveis Consideradas (Features)**
-Informações disponíveis no momento do planejamento/compra.
-*   **Temporais:** `MONTH`, `DAY`, `DAY_OF_WEEK`, `HOUR` (Extraído de Scheduled Departure). *Tratamento: Mantidos numéricos.*
-*   **Geográficas/Operacionais:** `AIRLINE`, `ORIGIN_AIRPORT`, `DESTINATION_AIRPORT`. *Tratamento: Label Encoding (transformados em números inteiros).*
-*   **Físicas:** `DISTANCE`. *Tratamento: Mantido numérico (normalizado em alguns modelos).*
+### 1. Definição do Target (`grafico_01_distribuicao.png`)
+*   **Insight:** A distribuição de atrasos possui uma cauda longa à direita (assimetria positiva). Atrasos extremos (>3 horas) representam apenas 0.81% dos dados, mas distorcem a média.
+*   **Decisão Técnica:** Definimos o problema como **Classificação Binária**. O corte foi estabelecido em **15 minutos** (padrão da FAA - Federal Aviation Administration).
+
+### 2. Eficiência Operacional (`grafico_02_companhias.png`)
+*   **Insight:** Existe uma distinção clara entre modelos de negócio. Companhias *Low-Cost* (ex: Spirit, Frontier) apresentam taxas de atraso sistematicamente maiores que as *Legacy Carriers* (ex: Delta, Alaska).
+*   **Decisão:** A variável `AIRLINE` é um preditor indispensável.
+
+### 3. Gargalos de Infraestrutura (`grafico_03_aeroportos.png`)
+*   **Insight:** Aeroportos que funcionam como grandes *Hubs* de conexão (ex: **ORD/Chicago**, **EWR/Newark**) aparecem consistentemente como gargalos. A saturação nestes locais aumenta a probabilidade de atraso independentemente da companhia aérea.
+
+### 4. Efeito Bola de Neve (`grafico_04_horario.png`)
+*   **Insight:** A probabilidade de atraso não é linear ao longo do dia. Voos matinais (06h-09h) têm alta pontualidade, enquanto voos noturnos (20h-23h) sofrem com o acúmulo de atrasos anteriores (*Propagation Effect*).
+*   **Decisão:** Criação da feature `SCHEDULED_HOUR` para capturar esse comportamento temporal.
+
+---
+
+## 🧠 Seleção de Features e Tratamento
+
+Para evitar **Data Leakage** (Vazamento de Dados), segregamos rigorosamente as variáveis disponíveis no momento da compra daquelas geradas apenas após a operação do voo.
+
+### A. Variáveis Removidas (Evitar Vazamento)
+*   **`DEPARTURE_TIME`, `DEPARTURE_DELAY`:** Se o avião saiu atrasado, a probabilidade de chegar atrasado é óbvia. O modelo deve prever o atraso, não constatá-lo.
+*   **`WHEELS_OFF`, `WHEELS_ON`, `TAXI_IN/OUT`:** Eventos que ocorrem durante a operação.
+*   **`AIR_SYSTEM_DELAY`, `WEATHER_DELAY`, etc:** Explicam o motivo do atraso *a posteriori*.
+*   **`CANCELLATION_REASON`:** Nulo para voos realizados.
+
+### B. Variáveis Selecionadas (Features do Modelo)
+Dados disponíveis no momento do planejamento/compra do bilhete:
+
+1.  **Temporais:**
+    *   `MONTH`, `DAY`, `DAY_OF_WEEK`: Capturam sazonalidade (férias, inverno).
+    *   `SCHEDULED_HOUR`: Extraído de `SCHEDULED_DEPARTURE` (Crucial para o efeito bola de neve).
+    *   *Tratamento:* Mantidos numéricos (`int8`).
+
+2.  **Operacionais/Geográficas:**
+    *   `AIRLINE`, `ORIGIN_AIRPORT`, `DESTINATION_AIRPORT`.
+    *   *Tratamento:* **Label Encoding** (Transformados em inteiros para processamento pelo Random Forest).
+
+3.  **Físicas:**
+    *   `DISTANCE`: Voos mais longos podem permitir recuperação de tempo em cruzeiro?
+    *   *Tratamento:* Mantido numérico (`float32`).
 
 
 ---
