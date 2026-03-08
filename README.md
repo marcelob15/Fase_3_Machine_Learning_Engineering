@@ -182,7 +182,12 @@ Após a estruturação dos dados, os artefatos visuais gerados (`img_eda/`) reve
 </p>
 
 ### 3. Gargalos de Infraestrutura (`grafico_03_aeroportos.png`)
-*   **Insight:** Aeroportos que funcionam como grandes *Hubs* de conexão (ex: **ORD/Chicago**, **EWR/Newark**) aparecem consistentemente como gargalos. A saturação nestes locais aumenta a probabilidade de atraso independentemente da companhia aérea.
+*   **Insight:** A análise de percentual de atrasos revelou que o volume de voos não é o único fator de risco. Enquanto **ATL (Atlanta)**, o aeroporto mais movimentado, mantém uma taxa de atraso controlada (15.6%), outros hubs sofrem colapso operacional.
+*   **Os Grandes Ofensores:**
+    1.  **ORD (Chicago O'Hare):** Lidera o ranking com **22.6%** de voos atrasados.
+    2.  **Região de Nova York:** O espaço aéreo mais congestionado dos EUA coloca seus três aeroportos no topo do ranking de problemas: **LGA** (2º), **JFK** (7º) e **EWR** (12º).
+*   **Conclusão:** Voos partindo de Chicago ou Nova York possuem, estatisticamente, um risco base significativamente maior.
+
 
 <p align="center">
   <img src="img_eda/grafico_03_aeroportos.png" width="700">
@@ -190,8 +195,13 @@ Após a estruturação dos dados, os artefatos visuais gerados (`img_eda/`) reve
 
 
 ### 4. Efeito Bola de Neve (`grafico_04_horario.png`)
-*   **Insight:** A probabilidade de atraso não é linear ao longo do dia. Voos matinais (06h-09h) têm alta pontualidade, enquanto voos noturnos (20h-23h) sofrem com o acúmulo de atrasos anteriores (*Propagation Effect*).
-*   **Decisão:** Criação da feature `SCHEDULED_HOUR` para capturar esse comportamento temporal.
+*   **Insight:** A probabilidade de atraso segue uma progressão quase linear, confirmando a hipótese de acumulação de atrasos (*Propagation Effect*).
+*   **Dados Críticos:**
+    *   **Manhã (05h - 08h):** Período mais seguro, com taxa de atraso entre **6% e 10%**.
+    *   **Pico (20h):** O sistema atinge saturação máxima às 20h, onde a probabilidade de atraso chega a **24.95%**.
+*   **Impacto no Passageiro:** Um voo marcado para as 20h tem **4x mais chances de atrasar** do que um voo marcado para as 06h da manhã.
+*   **Decisão Técnica:** A feature `SCHEDULED_HOUR` provou ser o preditor temporal mais forte do modelo.
+
 
 <p align="center">
   <img src="img_eda/grafico_04_horario.png" width="700">
@@ -247,7 +257,7 @@ O objetivo principal foi prever se um voo sofrerá um atraso superior a 15 minut
 
 #### 🔎 Interpretabilidade
 
-A análise de importância das variáveis (`feature_importances_`) revelou a dinâmica operacional dos atrasos:
+A análise de importância das variáveis revelou a dinâmica operacional dos atrasos:
 
 1.  **Dominância do Horário (`SCHEDULED_HOUR`):** Representa aproximadamente **48%** da decisão do modelo. Isso confirma estatisticamente o "Efeito Bola de Neve": atrasos matinais se propagam e se intensificam, tornando voos noturnos inerentemente mais arriscados.
 2.  **Sazonalidade (`MONTH`):** A segunda variável mais forte, capturando o impacto de meses de inverno (nevascas) e alta temporada de verão.
@@ -285,7 +295,7 @@ O algoritmo segmentou a malha aérea americana em 4 zonas distintas:
 3.  **Zonas de Eficiência:** Aeroportos em regiões de clima estável (ex: Sul/Oeste) que apresentaram menor variância nos horários.
 
 > **Visualização:**
-> O mapa gerado (`img_nao_supervisionado/mapa_clusters_geograficos.png`) permite à gestão identificar visualmente as zonas de gargalo logístico, sugerindo onde alocar mais tempo de solo (buffer) entre voos.
+> O mapa gerado (`img_nao_supervisionado/mapa_clusters_geograficos.png`) permite à gestão identificar visualmente as zonas de gargalo logístico, sugerindo onde alocar mais tempo de solo entre voos.
 
 <p align="center">
   <img src="img_nao_supervisionado/mapa_clusters_geograficos.png" width="700">
