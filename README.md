@@ -168,16 +168,34 @@ Após a estruturação dos dados, os artefatos visuais gerados (`img_eda/`) reve
 *   **Insight:** A distribuição de atrasos possui uma cauda longa à direita (assimetria positiva). Atrasos extremos (>3 horas) representam apenas 0.81% dos dados, mas distorcem a média.
 *   **Decisão Técnica:** Definimos o problema como **Classificação Binária**. O corte foi estabelecido em **15 minutos** (padrão da FAA - Federal Aviation Administration).
 
+<p align="center">
+  <img src="img_eda/grafico_01_distribuicao.png" width="700">
+</p>
+
+
 ### 2. Eficiência Operacional (`grafico_02_companhias.png`)
 *   **Insight:** Existe uma distinção clara entre modelos de negócio. Companhias *Low-Cost* (ex: Spirit, Frontier) apresentam taxas de atraso sistematicamente maiores que as *Legacy Carriers* (ex: Delta, Alaska).
 *   **Decisão:** A variável `AIRLINE` é um preditor indispensável.
 
+<p align="center">
+  <img src="img_eda/grafico_02_companhias.png" width="700">
+</p>
+
 ### 3. Gargalos de Infraestrutura (`grafico_03_aeroportos.png`)
 *   **Insight:** Aeroportos que funcionam como grandes *Hubs* de conexão (ex: **ORD/Chicago**, **EWR/Newark**) aparecem consistentemente como gargalos. A saturação nestes locais aumenta a probabilidade de atraso independentemente da companhia aérea.
+
+<p align="center">
+  <img src="img_eda/grafico_03_aeroportos.png" width="700">
+</p>
+
 
 ### 4. Efeito Bola de Neve (`grafico_04_horario.png`)
 *   **Insight:** A probabilidade de atraso não é linear ao longo do dia. Voos matinais (06h-09h) têm alta pontualidade, enquanto voos noturnos (20h-23h) sofrem com o acúmulo de atrasos anteriores (*Propagation Effect*).
 *   **Decisão:** Criação da feature `SCHEDULED_HOUR` para capturar esse comportamento temporal.
+
+<p align="center">
+  <img src="img_eda/grafico_04_horario.png" width="700">
+</p>
 
 ---
 
