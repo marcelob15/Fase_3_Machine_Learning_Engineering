@@ -111,7 +111,7 @@ python 06_Supervisionado_classificacao_atraso.py
 python 07_Nao_Supervisionado_clusterizacao_geografica.py
 ```
 
-A partir do `03_ETL.py`, o uso de arquivos **Parquet** reduz drasticamente o tempo de carregamento e processamento.
+A partir do script 03_ETL.py, os dados passam a ser armazenados no formato **Parquet** em vez de CSV. Essa mudança foi adotada para melhorar significativamente o desempenho do processamento de dados.
 
 ---
 
