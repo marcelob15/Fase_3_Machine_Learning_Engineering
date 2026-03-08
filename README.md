@@ -117,6 +117,21 @@ A partir do script 03_ETL.py, os dados passam a ser armazenados no formato **Par
 
 ## 📊 Resultados e Conclusões
 
+---
+
+### 📈 Análise Exploratória de Dados (EDA)
+
+As imagens na pasta `img_eda/` incluem:
+
+- `grafico_01_distribuicao.png` — Distribuição dos minutos de atraso
+- `grafico_02_companhias.png` — Ranking de pontualidade por companhia
+- `grafico_03_aeroportos.png` — Principais gargalos logísticos
+- `grafico_04_horario.png` — Probabilidade de atraso ao longo do dia
+
+As análises confirmam que atrasos aumentam progressivamente ao longo das horas, reforçando a importância da variável temporal.
+
+---
+
 ### 🤖 Aprendizado Supervisionado (Classificação)
 
 Modelo utilizado: **Random Forest Classifier**  
@@ -158,19 +173,6 @@ Visualização disponível em:
 ```
 img_nao_supervisionado/mapa_clusters_geograficos.png
 ```
-
----
-
-### 📈 Análise Exploratória de Dados (EDA)
-
-As imagens na pasta `img_eda/` incluem:
-
-- `grafico_01_distribuicao.png` — Distribuição dos minutos de atraso
-- `grafico_02_companhias.png` — Ranking de pontualidade por companhia
-- `grafico_03_aeroportos.png` — Principais gargalos logísticos
-- `grafico_04_horario.png` — Probabilidade de atraso ao longo do dia
-
-As análises confirmam que atrasos aumentam progressivamente ao longo das horas, reforçando a importância da variável temporal.
 
 ---
 
