@@ -8,12 +8,14 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.cluster import KMeans
 from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
 import os
+import time  # Importado para medir a performance da limpeza
 
 # 1. Configuração de Diretório
 base_dir = os.path.dirname(os.path.abspath(__file__))
 output_dir = os.path.join(base_dir, 'img_randon_forest')
 os.makedirs(output_dir, exist_ok=True)
 
+start_time = time.time()
 
 # 1. Carregamento Relâmpago
 print("📂 Carregando dados do Parquet...")
@@ -75,7 +77,6 @@ plt.savefig(f'{output_dir}/mapa_clusters_ml.png')
 
 
 
-
 # Ver a importância das variáveis
 importances = rf.feature_importances_
 features = X.columns
@@ -100,6 +101,12 @@ plt.ylabel('Variáveis do Modelo')
 plt.savefig(f'{output_dir}/feature_importance_final.png', bbox_inches='tight')
 plt.show()
 
+# Fim da medição
+end_time = time.time()
+tempo_total = end_time - start_time
+
+print(f"⏱️ Tempo total de Random Forest: {tempo_total:.2f} segundos")
+print("="*50)
 
 
 print("✨ Processo concluído! Gráficos salvos em 'goo_img/'.")

@@ -331,6 +331,12 @@ A análise de importância das variáveis revelou a dinâmica operacional dos at
   <img src="img_supervisionado/matriz_confusao.png" width="700">
 </p>
 
+📉 Trade-off na Matriz de Confusão
+
+Minimização de Falsos Negativos: Ao obtermos um Recall de 0.65, reduzimos a chance de um passageiro "ser pego de surpresa" por um atraso.
+
+Gestão de Falsos Positivos: O modelo gera alarmes falsos (Precision de 0.27), mas no setor aéreo, o custo de um passageiro chegar cedo e o voo estar no horário é significativamente menor do que o custo de um passageiro perder uma conexão internacional por falta de aviso.
+
 ---
 
 ### 🧩 Aprendizado Não Supervisionado (Clusterização de Risco)
