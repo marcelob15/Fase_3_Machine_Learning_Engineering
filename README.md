@@ -158,6 +158,9 @@ O processamento bruto do CSV consumia cerca de **1.45 GB** de RAM. Através de t
 *   `MONTH` / `DAY`: `int64` ➔ `int8`
 *   `ARRIVAL_DELAY`: `float64` ➔ `float32`
 
+* **Tipagem Categórica:** Colunas como `AIRLINE` e `ORIGIN_AIRPORT` (strings repetitivas) foram convertidas para `category`, substituindo textos por ponteiros inteiros.
+* **Redução de Precisão:** Convertemos `int64` para `int8` (meses, dias) e `float64` para `float32` (latitudes, longitudes), mantendo a integridade estatística com metade do peso.
+
 ---
 
 ## 📈 Análise Exploratória de Dados (EDA)
@@ -195,7 +198,7 @@ Após a estruturação dos dados, os artefatos visuais gerados (`img_eda/`) reve
 
 
 ### 4. Efeito Bola de Neve (`grafico_04_horario.png`)
-*   **Insight:** A probabilidade de atraso segue uma progressão quase linear, confirmando a hipótese de acumulação de atrasos (*Propagation Effect*).
+*   **Insight:** A probabilidade de atraso segue uma progressão quase linear, confirmando a hipótese de acumulação de atrasos.
 *   **Dados Críticos:**
     *   **Manhã (05h - 08h):** Período mais seguro, com taxa de atraso entre **6% e 10%**.
     *   **Pico (20h):** O sistema atinge saturação máxima às 20h, onde a probabilidade de atraso chega a **24.95%**.
@@ -234,6 +237,22 @@ Dados disponíveis no momento do planejamento/compra do bilhete:
 3.  **Físicas:**
     *   `DISTANCE`: Voos mais longos podem permitir recuperação de tempo em cruzeiro?
     *   *Tratamento:* Mantido numérico (`float32`).
+
+
+### C. Variáveis Criadas
+
+### 1. `SCHEDULED_HOUR` (O Preditor Temporal)
+**Origem:** Extraída da coluna `SCHEDULED_DEPARTURE` (formato HHMM).
+* **Motivo:** Reduzir o ruído de minutos individuais e agrupar voos em janelas horárias. 
+* **Impacto:** Foi identificada como a **variável mais importante do modelo (Importance ≈ 48%)**, capturando o "Efeito Bola de Neve", onde atrasos matinais se acumulam linearmente até o pico das 20h.
+
+### 2. `TARGET` / `IS_DELAYED` (Variável Resposta)
+**Origem:** Derivada de `ARRIVAL_DELAY`.
+* **Lógica:** Seguindo o padrão da **FAA**, voos com atraso > 15 min são classificados como `1`, os demais como `0`. Isso transforma o problema em uma classificação binária robusta.
+
+### 3. Enriquecimento Geográfico (`LATITUDE` / `LONGITUDE`)
+**Origem:** *Merge* estratégico com `airports.csv`.
+* **Utilidade:** Fundamental para a etapa de **Aprendizado Não Supervisionado**, permitindo ao K-Means agrupar aeroportos por perfis de risco regional.
 
 
 ---
