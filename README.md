@@ -239,7 +239,7 @@ Dados disponíveis no momento do planejamento/compra do bilhete:
     *   *Tratamento:* Mantido numérico (`float32`).
 
 
-### C. Variáveis Criadas
+### C. Variáveis Criadas (Engenharia de Atributos)
 
 ### 1. `SCHEDULED_HOUR` (O Preditor Temporal)
 **Origem:** Extraída da coluna `SCHEDULED_DEPARTURE` (formato HHMM).
@@ -298,26 +298,29 @@ A análise de importância das variáveis revelou a dinâmica operacional dos at
 
 ### 🧩 Aprendizado Não Supervisionado (Clusterização de Risco)
 
-Para entender a geografia do atraso, aplicamos técnicas de agrupamento para segmentar os aeroportos não apenas por localização, mas por **perfil de risco operacional**.
+Para entender a geografia do atraso, aplicamos o algoritmo **K-Means** para segmentar os aeroportos americanos. O objetivo foi agrupar aeroportos não apenas por sua localização, mas por seu **comportamento operacional**.
 
 #### 🛠️ Metodologia
-*   **Algoritmo:** **K-Means**.
-*   **Features de Entrada:** Latitude, Longitude e Taxa Média de Atraso (Target Mean).
-*   **Número de Clusters (K):** 4 (definido via Método do Cotovelo/Elbow Method).
+* **Algoritmo:** K-Means.
+* **Features de Entrada:** Latitude, Longitude e Taxa Média de Atraso (Target Mean).
+* **K (Clusters):** 4 zonas distintas identificadas via Método do Cotovelo.
 
-#### 📍 Perfis Identificados (Insights)
+#### 📍 Perfis Identificados (Insights de Negócio)
 
-O algoritmo segmentou a malha aérea americana em 4 zonas distintas:
+A clusterização revelou padrões onde o volume de voos não é o único vilão, mas sim a combinação de densidade e localização geográfica:
 
-1.  **Hubs de Alto Risco (Nordeste/Midwest):** Clusters que agrupam aeroportos como **ORD (Chicago)** e **EWR (Newark)**. Caracterizados por alto volume de tráfego e condições climáticas adversas, gerando as maiores médias de atraso.
-2.  **Aeroportos Regionais Críticos:** Pequenos aeroportos (ex: Aspen) que, apesar do baixo volume, possuem taxas de atraso extremas devido à geografia complexa.
-3.  **Zonas de Eficiência:** Aeroportos em regiões de clima estável (ex: Sul/Oeste) que apresentaram menor variância nos horários.
+1.  **Gargalos de Alta Saturação (Nordeste e Midwest):** Este cluster agrupa os aeroportos de maior risco operacional. O grande destaque é **ORD (Chicago)**, que lidera o ranking de atrasos com **22.62%** de probabilidade de interrupção. Logo atrás, o complexo de Nova York forma um subgrupo crítico: **LGA (22.13%)**, **JFK (20.92%)** e **EWR (20.20%)**. A proximidade geográfica e o alto tráfego criam um "efeito dominó" nestas regiões.
 
-> **Visualização:**
-> O mapa gerado (`img_nao_supervisionado/mapa_clusters_geograficos.png`) permite à gestão identificar visualmente as zonas de gargalo logístico, sugerindo onde alocar mais tempo de solo entre voos.
+2.  **Hubs de Eficiência Logística:** Representado por aeroportos como **ATL (Atlanta)**. Apesar de possuir o maior volume absoluto de voos do dataset (346.836), ele foi agrupado em um perfil de risco moderado (**15.66%** de atrasos). Isso demonstra que o gerenciamento de pátio e a infraestrutura local podem mitigar o risco, mesmo em altas densidades.
+
+3.  **Aeroportos Regionais de Alta Sensibilidade:** Clusters que agrupam aeroportos menores com volumes reduzidos, mas taxas de atraso que superam os 25% devido a fatores climáticos severos ou geografia complexa (ex: aeroportos em regiões montanhosas).
+
+4.  **Zonas de Estabilidade Operacional:** Aeroportos localizados principalmente no Sul e Oeste dos EUA, com climas mais estáveis e menor congestionamento de espaço aéreo, apresentando as menores variâncias nos horários de chegada.
+
+> **Visualização Estratégica:** O mapa de clusters (`img_nao_supervisionado/mapa_clusters_ml.png`) permite que gestores identifiquem onde o "Risco Base" é geograficamente inevitável, auxiliando no planejamento de rotas alternativas ou folgas de cronograma (buffers).
 
 <p align="center">
-  <img src="img_nao_supervisionado/mapa_clusters_geograficos.png" width="700">
+  <img src="img_nao_supervisionado/mapa_clusters_ml.png" width="700" alt="Mapa de Clusters Geográficos">
 </p>
 
 ---
