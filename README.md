@@ -144,14 +144,38 @@ A partir do script 03_ETL.py, os dados passam a ser armazenados no formato **Par
 
 ### 📈 Análise Exploratória de Dados (EDA)
 
-As imagens na pasta `img_eda/` incluem:
+Nesta etapa, processamos **5.8 milhões de registros** para entender o comportamento da malha aérea. O foco foi identificar variáveis preditoras para a modelagem supervisionada. Os artefatos visuais gerados (`img_eda/`) revelaram os seguintes padrões:
 
-- `grafico_01_distribuicao.png` — Distribuição dos minutos de atraso
-- `grafico_02_companhias.png` — Ranking de pontualidade por companhia
-- `grafico_03_aeroportos.png` — Principais gargalos logísticos
-- `grafico_04_horario.png` — Probabilidade de atraso ao longo do dia
+- **`grafico_01_distribuicao.png` (Target Definition)**
+  - **Insight:** A distribuição de atrasos possui uma cauda longa à direita (assimetria positiva).
+  - **Decisão Técnica:** Definimos o *target* binário com corte em **15 minutos** (padrão FAA), pois tratar o problema como regressão pura seria prejudicado pelos *outliers* extremos (>3 horas), que representam 0.81% dos dados.
 
-As análises confirmam que atrasos aumentam progressivamente ao longo das horas, reforçando a importância da variável temporal.
+- **`grafico_02_companhias.png` (Operational Efficiency)**
+  - **Insight:** Há uma clara distinção de performance entre modelos de negócio. Companhias *Low-Cost* (ex: Spirit, Frontier) apresentam taxas de atraso sistematicamente maiores que as *Legacy Carriers* (ex: Delta, Alaska), tornando a variável `AIRLINE` um forte preditor.
+
+- **`grafico_03_aeroportos.png` (Infrastructure Bottlenecks)**
+  - **Insight:** Aeroportos que funcionam como grandes *Hubs* de conexão (ex: **ORD/Chicago**, **EWR/Newark**) aparecem consistentemente como gargalos logísticos. A saturação da infraestrutura nestes locais aumenta a probabilidade de atraso independentemente da companhia aérea.
+
+- **`grafico_04_horario.png` (Propagation Effect)**
+  - **Insight:** A probabilidade de atraso não é linear. Observamos o **"Efeito Bola de Neve"**: voos pela manhã (06h-09h) têm pontualidade alta, enquanto voos noturnos (20h-23h) sofrem com o acúmulo de atrasos anteriores.
+  - **Decisão Técnica:** A criação da feature `SCHEDULED_HOUR` (extraída do horário de partida) é indispensável para o modelo.
+
+
+#### **A. Variáveis Ignoradas (E por quê?)**
+Estas variáveis foram removidas para evitar **Data Leakage (Vazamento de Dados)**. Elas contêm informações que só ocorrem *após* o evento que queremos prever.
+*   `DEPARTURE_TIME`, `DEPARTURE_DELAY`: Se o avião já saiu atrasado, é óbvio que chegará atrasado.
+*   `WHEELS_OFF`, `WHEELS_ON`: Horários exatos da decolagem/pouso.
+*   `TAXI_OUT`, `TAXI_IN`: Tempo de manobra na pista.
+*   `ELAPSED_TIME`, `AIR_TIME`: Duração real do voo.
+*   `CANCELLATION_REASON`: Só existe se o voo for cancelado.
+*   `AIR_SYSTEM_DELAY`, `SECURITY_DELAY`, etc.: Explicam o atraso *depois* que ele ocorreu.
+
+#### **B. Variáveis Consideradas (Features)**
+Informações disponíveis no momento do planejamento/compra.
+*   **Temporais:** `MONTH`, `DAY`, `DAY_OF_WEEK`, `HOUR` (Extraído de Scheduled Departure). *Tratamento: Mantidos numéricos.*
+*   **Geográficas/Operacionais:** `AIRLINE`, `ORIGIN_AIRPORT`, `DESTINATION_AIRPORT`. *Tratamento: Label Encoding (transformados em números inteiros).*
+*   **Físicas:** `DISTANCE`. *Tratamento: Mantido numérico (normalizado em alguns modelos).*
+
 
 ---
 
