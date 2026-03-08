@@ -210,47 +210,55 @@ Dados disponíveis no momento do planejamento/compra do bilhete:
 
 ---
 
-### 🤖 Aprendizado Supervisionado (Classificação)
+### 🤖 Aprendizado Supervisionado (Modelagem Preditiva)
 
-Modelo utilizado: **Random Forest Classifier**  
-Estratégia para desbalanceamento: `class_weight='balanced'`
+O objetivo principal foi prever se um voo sofrerá um atraso superior a 15 minutos (Target Binário). Para isso, comparamos abordagens lineares e baseadas em árvores, optando pelo **Random Forest Classifier** devido à sua robustez contra *outliers* e capacidade de capturar relações não-lineares.
 
-#### 📈 Métricas Principais
+#### ⚙️ Estratégia de Treinamento
+*   **Algoritmo:** `RandomForestClassifier` (Scikit-Learn).
+*   **Desafio do Desbalanceamento:** A classe positiva (Atraso) representa a minoria dos dados. Modelos padrão tendem a ignorá-la, resultando em Recall próximo de 0%.
+*   **Solução:** Utilizamos o hiperparâmetro `class_weight='balanced'`. Isso força o modelo a penalizar severamente erros na classe minoritária, priorizando a detecção de atrasos em detrimento de uma leve queda na precisão global.
 
-- **ROC-AUC Score:** 0.6719  
-- **Recall (Atrasos):** 0.65  
+#### 📈 Análise de Métricas
 
-O modelo demonstra boa capacidade de separação entre voos pontuais e atrasados.
+| Métrica | Valor | Interpretação de Negócio |
+| :--- | :--- | :--- |
+| **ROC-AUC Score** | **0.6719** | Indica que o modelo tem uma capacidade razoável de distinguir as classes, considerando que não utilizamos dados meteorológicos em tempo real (maior causa de aleatoriedade). |
+| **Recall (Sensibilidade)** | **0.65** | **Resultado Crítico:** O modelo identifica **65% dos atrasos reais**. Antes do balanceamento, este valor era <2%. Em um cenário real, priorizamos alertar o passageiro sobre um risco (mesmo que seja um falso alarme) do que deixá-lo perder uma conexão. |
+| **Precision** | **~0.27** | O trade-off aceito: para garantir o alto Recall, o modelo gera mais alertas preventivos. |
 
-#### 🔎 Interpretabilidade
+#### 🔎 Interpretabilidade (Explainable AI)
 
-- **Feature Importance:**  
-  `img_supervisionado/feature_importance.png`  
-  A variável `HOUR` representa ~48% da importância total, indicando que atrasos são cumulativos ao longo do dia.
+A análise de importância das variáveis (`feature_importances_`) revelou a dinâmica operacional dos atrasos:
 
-- **Matriz de Confusão:**  
-  `img_supervisionado/matriz_confusao.png`  
-  Mostra equilíbrio entre falsos positivos e falsos negativos.
+1.  **Dominância do Horário (`SCHEDULED_HOUR`):** Representa aproximadamente **48%** da decisão do modelo. Isso confirma estatisticamente o "Efeito Bola de Neve": atrasos matinais se propagam e se intensificam, tornando voos noturnos inerentemente mais arriscados.
+2.  **Sazonalidade (`MONTH`):** A segunda variável mais forte, capturando o impacto de meses de inverno (nevascas) e alta temporada de verão.
+
+> **Artefatos:**
+> - `img_supervisionado/feature_importance.png`: Ranking de variáveis.
+> - `img_supervisionado/matriz_confusao.png`: Visualização dos Acertos vs. Erros (Trade-off Precisão/Recall).
 
 ---
 
-### 🧩 Aprendizado Não Supervisionado (Clusterização)
+### 🧩 Aprendizado Não Supervisionado (Clusterização de Risco)
 
-Algoritmo: **K-Means**
+Para entender a geografia do atraso, aplicamos técnicas de agrupamento para segmentar os aeroportos não apenas por localização, mas por **perfil de risco operacional**.
 
-Foram identificados 4 clusters distintos com base em:
-- Localização geográfica
-- Taxa média de atraso
-- Volume operacional
+#### 🛠️ Metodologia
+*   **Algoritmo:** **K-Means**.
+*   **Features de Entrada:** Latitude, Longitude e Taxa Média de Atraso (Target Mean).
+*   **Número de Clusters (K):** 4 (definido via Método do Cotovelo/Elbow Method).
 
-📍 **Insights:**
-- Concentração de risco no Nordeste dos EUA
-- Impacto significativo de grandes hubs como Chicago (ORD)
+#### 📍 Perfis Identificados (Insights)
 
-Visualização disponível em:
-```
-img_nao_supervisionado/mapa_clusters_geograficos.png
-```
+O algoritmo segmentou a malha aérea americana em 4 zonas distintas:
+
+1.  **Hubs de Alto Risco (Nordeste/Midwest):** Clusters que agrupam aeroportos como **ORD (Chicago)** e **EWR (Newark)**. Caracterizados por alto volume de tráfego e condições climáticas adversas, gerando as maiores médias de atraso.
+2.  **Aeroportos Regionais Críticos:** Pequenos aeroportos (ex: Aspen) que, apesar do baixo volume, possuem taxas de atraso extremas devido à geografia complexa.
+3.  **Zonas de Eficiência:** Aeroportos em regiões de clima estável (ex: Sul/Oeste) que apresentaram menor variância nos horários.
+
+> **Visualização:**
+> O mapa gerado (`img_nao_supervisionado/mapa_clusters_geograficos.png`) permite à gestão identificar visualmente as zonas de gargalo logístico, sugerindo onde alocar mais tempo de solo (buffer) entre voos.
 
 ---
 
