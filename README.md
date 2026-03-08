@@ -320,7 +320,7 @@ A clusterização revelou padrões onde o volume de voos não é o único vilão
 > **Visualização Estratégica:** O mapa de clusters (`img_nao_supervisionado/mapa_clusters_ml.png`) permite que gestores identifiquem onde o "Risco Base" é geograficamente inevitável, auxiliando no planejamento de rotas alternativas ou folgas de cronograma (buffers).
 
 <p align="center">
-  <img src="img_nao_supervisionado/mapa_clusters_ml.png" width="700" alt="Mapa de Clusters Geográficos">
+  <img src="img_nao_supervisionado/mapa_clusters_geograficos.png" width="700" alt="Mapa de Clusters Geográficos">
 </p>
 
 ---
