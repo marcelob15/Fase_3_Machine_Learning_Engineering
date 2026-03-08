@@ -115,6 +115,29 @@ A partir do script 03_ETL.py, os dados passam a ser armazenados no formato **Par
 
 ---
 
+## 📂 Organização do Projeto
+
+```
+.
+├── dataset/
+├── parquet/
+├── img_eda/
+├── img_supervisionado/
+├── img_nao_supervisionado/
+├── 01_eda.py
+├── 02_graficos.py
+├── 03_ETL.py
+├── 04_Validacao.py
+├── 05_Limpeza.py
+├── 06_Supervisionado_classificacao_atraso.py
+├── 07_Nao_Supervisionado_clusterizacao_geografica.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+
 ## 📊 Resultados e Conclusões
 
 ---
@@ -176,27 +199,6 @@ img_nao_supervisionado/mapa_clusters_geograficos.png
 
 ---
 
-## 📂 Organização do Projeto
-
-```
-.
-├── dataset/
-├── parquet/
-├── img_eda/
-├── img_supervisionado/
-├── img_nao_supervisionado/
-├── 01_eda.py
-├── 02_graficos.py
-├── 03_ETL.py
-├── 04_Validacao.py
-├── 05_Limpeza.py
-├── 06_Supervisionado_classificacao_atraso.py
-├── 07_Nao_Supervisionado_clusterizacao_geografica.py
-├── requirements.txt
-└── README.md
-```
-
----
 
 ## 📖 Dicionário de Dados
 
